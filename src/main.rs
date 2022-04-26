@@ -1,25 +1,22 @@
 use captrs::*;
-use std::time::Duration;
-use std::thread::sleep;
-use image::*;
-//use std::time::Instant;
-use clipboard_win::{formats, set_clipboard};
-use notify_rust::{Notification, Timeout};
 use chrono::Local;
-
+use clipboard_win::{formats, set_clipboard};
+use image::*;
+use notify_rust::{Notification, Timeout};
+use std::thread::sleep;
+use std::time::Duration;
 
 fn main() {
+    println!("{} started", Local::now());
     let mut capturer = Capturer::new_with_timeout(0, Duration::from_secs(2)).unwrap();
 
     let (w, h) = capturer.geometry();
     sleep(Duration::from_millis(100));
-    
+
     let mut decoder = quircs::Quirc::default();
     let mut last_clip_set = String::with_capacity(5000);
 
     loop {
-        //let start = Instant::now();
-
         // Get a screen shot
         let ps = match capturer.capture_frame() {
             Ok(f) => f,
@@ -60,7 +57,8 @@ fn main() {
                     println!("{} failed to decode utf8, continuing", Local::now());
                     continue;
                 }
-            }.to_string();
+            }
+            .to_string();
 
             if decoded_str.starts_with("AGSF") && decoded_str.ne(&last_clip_set) {
                 match set_clipboard(formats::Unicode, &decoded_str[4..]) {
@@ -71,7 +69,12 @@ fn main() {
                     }
                 }
                 println!("{} set: {}", Local::now(), &decoded_str[4..]);
-                Notification::new().summary("QR Clipped").body(&decoded_str[4..]).timeout(Timeout::Milliseconds(2000)).show().unwrap();
+                Notification::new()
+                    .summary("QR Clipped")
+                    .body(&decoded_str[4..])
+                    .timeout(Timeout::Milliseconds(2000))
+                    .show()
+                    .unwrap();
                 last_clip_set = decoded_str;
                 break;
             }
