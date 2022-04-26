@@ -12,6 +12,7 @@ quircs = "0.10.0"
 clipboard-win = "4.4.1"
 notify-rust = "4.5.8"
 chrono = "0.4.19"
+dxgcap = "0.2.4"
 
 [profile.release]
 #opt-level = "z"     # Optimize for size.
