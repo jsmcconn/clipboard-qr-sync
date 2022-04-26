@@ -13,5 +13,12 @@ clipboard-win = "4.4.1"
 notify-rust = "4.5.8"
 chrono = "0.4.19"
 
+[profile.release]
+#opt-level = "z"     # Optimize for size.
+lto = true          # Enable Link Time Optimization
+codegen-units = 1   # Reduce number of codegen units to increase optimizations.
+panic = "abort"     # Abort on panic
+strip = true        # Automatically strip symbols from the binary.
+
 [build-dependencies]
 embed-resource = "1.7.2"

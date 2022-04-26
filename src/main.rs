@@ -1,4 +1,4 @@
-use captrs::*;
+use captrs::Capturer;
 use chrono::Local;
 use clipboard_win::{formats, set_clipboard};
 use image::*;
