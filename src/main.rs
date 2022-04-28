@@ -15,7 +15,10 @@ fn main() {
     // Attach to the console if started on command line
     let console_attached = match unsafe { winapi::um::wincon::AttachConsole(u32::MAX) } {
         0 => false,
-        _ => true
+        _ => {
+            print!("\n");
+            true
+        }
     };
 
     // Process arguments
@@ -23,7 +26,7 @@ fn main() {
 
         .override_usage(&*format!(
             r#"Flash QR code from clipboard:
-    {} [--qr-scale <scale>] [--window-duration <duration>] [--window-anchor <corner>] [-x <posx>] [-y <posy>]
+    {} [--qr-scale <scale>] [--window-duration <duration>] [--anchor <corner>] [-x <posx>] [-y <posy>]
 
     Scan for QR codes and copy to clipboard:
     {} --scan-mode [--scan-interval <interval>] [--display-index <index>] [--desktop-notifications]"#
@@ -40,10 +43,10 @@ fn main() {
         // Args for post mode
         .arg(arg!(--"qr-scale" <scale> "scale qr code").required(false).default_value("2").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
         .arg(arg!(--"window-duration" <duration> "show window for (ms)").required(false).default_value("1500").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
-        .arg(arg!(--"window-anchor" <corner> "anchor corner").required(false).default_value("tl").possible_values(["tl", "tr", "bl", "br"]).conflicts_with("scan-mode"))
+        .arg(arg!(--"anchor" <corner> "anchor corner").required(false).default_value("tl").possible_values(["tl", "tr", "bl", "br"]).conflicts_with("scan-mode"))
         .arg(arg!(-x <posx> "anchor corner absolute x").required(false).default_value("0").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
         .arg(arg!(-y <posy> "anchor corner absolute y").required(false).default_value("0").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode")
-        ).get_matches();
+        ).try_get_matches().unwrap_or_else(|e| e.exit());
 
     if args.is_present("scan-mode") {
         // If no console is attached we need to alloc one
@@ -53,7 +56,7 @@ fn main() {
         scan_for_qr(args.value_of_t_or_exit("display-index"), args.value_of_t_or_exit("scan-interval"), args.is_present("desktop-notifications"));
     }
     else {
-        clip_to_qr(args.value_of_t_or_exit("qr-scale"), args.value_of_t_or_exit("window-duration"), args.value_of("window-anchor").unwrap(), args.value_of_t_or_exit("posx"), args.value_of_t_or_exit("posy"));
+        clip_to_qr(args.value_of_t_or_exit("qr-scale"), args.value_of_t_or_exit("window-duration"), args.value_of("anchor").unwrap(), args.value_of_t_or_exit("posx"), args.value_of_t_or_exit("posy"));
     }
 }
 
