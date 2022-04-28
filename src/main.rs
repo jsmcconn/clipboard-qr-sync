@@ -23,6 +23,7 @@ fn main() {
 
     // Process arguments
     let args = command!()
+        .term_width(114)
 
         .override_usage(&*format!(
             r#"Flash QR code from clipboard:
