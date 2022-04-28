@@ -12,6 +12,12 @@ use show_image::{create_window, Color, winit::dpi::PhysicalPosition};
 
 #[show_image::main]
 fn main() {
+    // Attach to the console if started on command line
+    let console_attached = match unsafe { winapi::um::wincon::AttachConsole(u32::MAX) } {
+        0 => false,
+        _ => true
+    };
+
     // Process arguments
     let args = command!()
 
@@ -24,23 +30,26 @@ fn main() {
             , crate_name!(), crate_name!()))
 
         // Tool mode
-        .arg(arg!(-s --"scan-mode" "Scan for QR codes and copy to clipboard").required(false))
+        .arg(arg!(-s --"scan-mode" "scan for QR codes and copy to clipboard").required(false))
 
         // Args for scan mode
-        .arg(arg!(--"scan-interval" <interval> "Scan interval (ms)").required(false).default_value("500").validator(|s| s.parse::<usize>()).requires("scan-mode"))
-        .arg(arg!(--"display-index" <index> "Scan display index (for multi-monitor)").required(false).default_value("0").validator(|s| s.parse::<usize>()).requires("scan-mode"))
-        .arg(arg!(--"desktop-notifications" "Notify on successful scan").required(false).requires("scan-mode"))
+        .arg(arg!(--"scan-interval" <interval> "scan interval (ms)").required(false).default_value("500").validator(|s| s.parse::<usize>()).requires("scan-mode"))
+        .arg(arg!(--"display-index" <index> "scan display index (for multi-monitor)").required(false).default_value("0").validator(|s| s.parse::<usize>()).requires("scan-mode"))
+        .arg(arg!(--"desktop-notifications" "notify on successful scan").required(false).requires("scan-mode"))
 
         // Args for post mode
-        .arg(arg!(--"qr-scale" <scale> "Scale qr code").required(false).default_value("2").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
-        .arg(arg!(--"window-duration" <duration> "Show window for (ms)").required(false).default_value("1500").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
-        .arg(arg!(--"window-anchor" <corner> "QR anchor corner").required(false).default_value("tl").possible_values(["tl", "tr", "bl", "br"]).conflicts_with("scan-mode"))
-        .arg(arg!(-x <posx> "QR anchor corner absolute x").required(false).default_value("0").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
-        .arg(arg!(-y <posy> "QR anchor corner absolute y").required(false).default_value("0").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
-
-        .get_matches();
+        .arg(arg!(--"qr-scale" <scale> "scale qr code").required(false).default_value("2").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
+        .arg(arg!(--"window-duration" <duration> "show window for (ms)").required(false).default_value("1500").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
+        .arg(arg!(--"window-anchor" <corner> "anchor corner").required(false).default_value("tl").possible_values(["tl", "tr", "bl", "br"]).conflicts_with("scan-mode"))
+        .arg(arg!(-x <posx> "anchor corner absolute x").required(false).default_value("0").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode"))
+        .arg(arg!(-y <posy> "anchor corner absolute y").required(false).default_value("0").validator(|s| s.parse::<usize>()).conflicts_with("scan-mode")
+        ).get_matches();
 
     if args.is_present("scan-mode") {
+        // If no console is attached we need to alloc one
+        if !console_attached {
+            let _success = unsafe { winapi::um::consoleapi::AllocConsole() };
+        }
         scan_for_qr(args.value_of_t_or_exit("display-index"), args.value_of_t_or_exit("scan-interval"), args.is_present("desktop-notifications"));
     }
     else {
@@ -168,9 +177,6 @@ fn qr_to_image(qr: QrCode, point_size: usize) -> Result<ImageBuffer<Luma<u8>, Ve
 
 
 fn scan_for_qr(display_index: usize, scan_interval: usize, desktop_notifications: bool) {
-    // Create a console
-    let _success = unsafe { winapi::um::consoleapi::AllocConsole() };
-
     println!(
         "{} scan mode started",
         &&Local::now().to_string()[..19].to_string()[..19]
