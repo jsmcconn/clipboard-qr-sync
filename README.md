@@ -1,12 +1,13 @@
-    clipboard-sync 0.1.0
+
+    clipboard-qr-sync 0.1.0
     Sync clipboards via QR codes.
 
     USAGE:
         Flash QR code from clipboard:
-        clipboard-sync [--qr-scale <scale>] [--window-duration <duration>] [--anchor <corner>] [-x <posx>] [-y <posy>]
+        clipboard-qr-sync [--qr-scale <scale>] [--window-duration <duration>] [--anchor <corner>] [-x <posx>] [-y <posy>]
 
         Scan for QR codes and copy to clipboard:
-        clipboard-sync --scan-mode [--scan-interval <interval>] [--display-index <index>] [--desktop-notifications]
+        clipboard-qr-sync --scan-mode [--scan-interval <interval>] [--display-index <index>] [--desktop-notifications]
 
     OPTIONS:
             --anchor <corner>               anchor corner [default: tl] [possible values: tl, tr, bl, br]
