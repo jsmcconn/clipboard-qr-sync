@@ -64,7 +64,7 @@ fn main() {
 
 fn clip_to_qr(scale: usize, duration: usize, anchor: &str, posx: i32, posy: i32) {
     // Read data from clipboard
-    let mut data = String::from("AGSF");
+    let mut data = String::from("rYt7");
     let clip = match get_clipboard_string() {
         Ok(s) => s,
         Err(_) => {
@@ -257,7 +257,7 @@ fn scan_for_qr(display_index: usize, scan_interval: usize, desktop_notifications
                 }
             };
 
-            if decoded.starts_with("AGSF") && last_clip_set.ne(decoded) {
+            if decoded.starts_with("rYt7") && last_clip_set.ne(decoded) {
                 match set_clipboard(formats::Unicode, &decoded[4..]) {
                     Ok(r) => r,
                     Err(_) => {
