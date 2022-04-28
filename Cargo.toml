@@ -1,5 +1,5 @@
 [package]
-name = "clipboard_sync"
+name = "clipboard-sync"
 version = "0.1.0"
 edition = "2021"
 description = "Sync clipboards via QR codes."
