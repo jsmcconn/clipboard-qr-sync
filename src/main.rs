@@ -8,7 +8,8 @@ use notify_rust::{Notification, Timeout};
 use std::thread::sleep;
 use std::time::Duration;
 use qrcodegen::{QrCode, QrCodeEcc};
-use show_image::{create_window, Color, winit::dpi::PhysicalPosition};
+use show_image::{create_window, Color};
+use glam::IVec2;
 
 #[show_image::main]
 fn main() {
@@ -127,9 +128,9 @@ fn clip_to_qr(scale: usize, duration: usize, anchor: &str, posx: i32, posy: i32)
         "br" => (posx - width as i32, posy - height as i32),
         "tl" | _ => (posx, posy)
     };
+    let position = IVec2::new(x, y);
     match window.run_function_wait(move|window| {
-        let p = PhysicalPosition::new(x, y);
-        window.set_outer_position(p)
+        window.set_outer_position(position)
     }) {
         Ok(_) => (),
         Err(_) => {
