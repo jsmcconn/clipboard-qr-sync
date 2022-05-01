@@ -9,7 +9,6 @@ use std::thread::sleep;
 use std::time::Duration;
 use qrcodegen::{QrCode, QrCodeEcc};
 use show_image::{create_window, Color};
-use glam::IVec2;
 
 #[show_image::main]
 fn main() {
@@ -122,13 +121,12 @@ fn clip_to_qr(scale: usize, duration: usize, anchor: &str, posx: i32, posy: i32)
     };
 
     // move the window
-    let (x, y) = match anchor {
-        "tr" => (posx - width as i32, posy),
-        "bl" => (posx, posy - height as i32),
-        "br" => (posx - width as i32, posy - height as i32),
-        "tl" | _ => (posx, posy)
+    let position: [i32; 2] = match anchor {
+        "tr" => [posx - width as i32, posy],
+        "bl" => [posx, posy - height as i32],
+        "br" => [posx - width as i32, posy - height as i32],
+        "tl" | _ => [posx, posy]
     };
-    let position = IVec2::new(x, y);
     match window.run_function_wait(move|window| {
         window.set_outer_position(position)
     }) {
