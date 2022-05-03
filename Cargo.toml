@@ -26,5 +26,5 @@ codegen-units = 1   # Reduce number of codegen units to increase optimizations.
 panic = "abort"     # Abort on panic
 strip = true        # Automatically strip symbols from the binary.
 
-[build-dependencies]
+[target.x86_64-pc-windows-msvc.build-dependencies]
 embed-resource = "1.7.2"
