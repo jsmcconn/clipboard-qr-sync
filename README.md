@@ -14,7 +14,7 @@ tools, but otherwise, install the C++ build tools before proceeding.
 
 Continue? (y/N) y
 ```
-2. Press "2" to customize the installation.
+2. Finish the installation accepting defaults, we will change the toolchain to gnu in the next step.
 ```
 Current installation options:
 
@@ -27,38 +27,13 @@ Current installation options:
 1) Proceed with installation (default)
 2) Customize installation
 3) Cancel installation
->2
+>
 ```
-3. Change the default host triple to `x86_64-pc-windows-gnu`.
+3. Start a new terminal, and change the default toolchain to `stable-gnu`.
 ```
-Default host triple? [x86_64-pc-windows-msvc]
-x86_64-pc-windows-gnu
+> rustup default stable-gnu
 ```
-4. Choose the defaults for everything else and proceed with the installation.
-```
-Default toolchain? (stable/beta/nightly/none) [stable]
-<ENTER>
-
-Profile (which tools and data to install)? (minimal/default/complete) [default]
-<ENTER>
-
-Modify PATH variable? (Y/n)
-<ENTER>
-
-Current installation options:
-
-
-   default host triple: x86_64-pc-windows-gnu
-     default toolchain: stable
-               profile: default
-  modify PATH variable: yes
-
-1) Proceed with installation (default)
-2) Customize installation
-3) Cancel installation
-><ENTER>
-```
-5. After installation completes grab the zip of this repo and build the exe.
+4. Get the zip of this repo and build the exe.
 ```
 clipboard-qr-sync> cargo build --release
 ```
