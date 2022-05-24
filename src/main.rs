@@ -94,16 +94,15 @@ fn clip_to_qr(scale: usize, duration: usize, anchor: &str, posx: i32, posy: i32)
     let height = img.height();
 
     // Show the image
-    let window_opts = show_image::WindowOptions {
-    preserve_aspect_ratio: true,
-    background_color: Color::white(),
-    start_hidden: true,
-    size: Some([width, height]),
-    resizable: false,
-    borderless: true,
-    overlays_visible: false,
-    default_controls: false,
-    };
+    let window_opts = show_image::WindowOptions::new()
+        .set_background_color(Color::white())
+        .set_start_hidden(true)
+        .set_size(Some([width, height]))
+        .set_resizable(false)
+        .set_borderless(true)
+        .set_show_overlays(false)
+        .set_default_controls(false);
+
     let window = match create_window("QR Clipper", window_opts) {
         Ok(w) => w,
         Err(_) => {
