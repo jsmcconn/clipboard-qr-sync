@@ -68,3 +68,20 @@ OPTIONS:
     -x <posx>                           anchor corner absolute x [default: 0]
     -y <posy>                           anchor corner absolute y [default: 0]
 ```
+## Back-end and GPU selection
+*From the [documentation for the show-image crate](https://docs.rs/show-image/0.12.3/show_image/index.html#back-end-and-gpu-selection):*
+
+This crate uses [wgpu](https://docs.rs/wgpu/0.12.0/x86_64-unknown-linux-gnu/wgpu/index.html) for rendering. You can force the selection of a specfic WGPU backend by setting the WGPU_BACKEND environment variable to one of the supported values:
+
+- primary: Use the primary backend for the platform (the default).
+- vulkan: Use the vulkan back-end.
+- metal: Use the metal back-end.
+- dx12: Use the DirectX 12 back-end.
+- dx11: Use the DirectX 11 back-end.
+- gl: Use the OpenGL back-end.
+- webgpu: Use the browser WebGPU back-end.
+
+You can also influence the GPU selection by setting the WGPU_POWER_PREF environment variable:
+
+- low: Prefer a low power GPU (the default).
+- high: Prefer a high performance GPU.
